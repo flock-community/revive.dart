@@ -8,13 +8,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:revive/effect/effect.dart';
 import 'package:revive/effect/test_effect.dart';
-import 'package:revive/model/model.dart';
 import 'package:revive_example/context/context.dart';
-import 'package:revive_example/event/todo_events.dart';
 import 'package:revive_example/main.dart';
 import 'package:revive_example/mock/todo.dart';
-import 'package:revive_example/model/event.dart';
-import 'package:revive_example/model/todo.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'utils/util.dart';
@@ -22,7 +18,7 @@ import 'utils/util.dart';
 void main() {
   testWidgets('MyApp', iphone8((tester) async {
     var todo = todoMock(description: 'Make revive');
-    var $ = TestContext.withEffects([todo]);
+    var $ = TestContext([todo]);
 
     await tester.pumpWidget(View($));
     await expectLater(find.byType(View), matchesGoldenFile('goldens/MyApp.png'));

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:revive/effect/effect.dart';
 import 'package:revive_example/context/context.dart';
 import 'package:revive_example/view/todo_view.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'app.dart';
 import 'mock/todo.dart';
@@ -20,9 +19,9 @@ void main() {
 abstract class ViewContext implements InboxContext {}
 
 class View extends StatelessWidget {
-  final ViewContext $;
-
   View(this.$);
+
+  final ViewContext $;
 
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,11 +38,10 @@ class View extends StatelessWidget {
 abstract class InboxContext implements TodoListContext {}
 
 class Inbox extends StatelessWidget {
-  final InboxContext $;
-
   Inbox(this.$);
 
-  @override
+  final InboxContext $;
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
