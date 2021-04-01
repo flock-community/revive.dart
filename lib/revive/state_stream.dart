@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:revive/effect/effect.dart';
 import 'package:revive/revive/reviver.dart';
-import 'package:rxdart/rxdart.dart';
 
 class StateStream<State> {
-  StateStream({required State state})
+  StateStream(State state)
       : _state = state,
         _streamController = StreamController.broadcast();
 
@@ -28,12 +27,14 @@ class StateStream<State> {
 }
 
 class TestStateStream<State> extends StateStream<State> {
-  TestStateStream({required State state, this.effects}) : super(state: state);
+  TestStateStream(State state, [StreamController<Effect>? effects])
+      : effects = effects ?? StreamController.broadcast(),
+        super(state);
 
-  final Subject<Effect>? effects;
+  final StreamController<Effect> effects;
 
   set state(State state) {
-    effects?.add(Output(revive, state, this));
+    effects.add(Output(revive, state, this));
     super.state = state;
   }
 }

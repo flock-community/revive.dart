@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:revive/effect/effect.dart';
 import 'package:revive/effect/test_effect.dart';
 import 'package:revive/model/model.dart';
-import 'package:rxdart/rxdart.dart';
 
 abstract class Repository<T extends Model> {
   Future<T?> get(String id);
@@ -18,7 +19,7 @@ abstract class Repository<T extends Model> {
 class TestRepository<T extends Model> implements Repository<T>, TestEffect {
   TestRepository(this.models, [this.effects]);
 
-  final Subject<Effect>? effects;
+  final StreamController<Effect>? effects;
   List<T> models;
 
   get(String id) => input(get, models.get(id));

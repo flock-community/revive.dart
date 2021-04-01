@@ -1,9 +1,9 @@
-import 'package:rxdart/rxdart.dart';
+import 'dart:async';
 
 import 'effect.dart';
 
 abstract class TestEffect {
-  abstract final Subject<Effect>? effects;
+  abstract final StreamController<Effect>? effects;
 }
 
 extension X on TestEffect {
@@ -27,4 +27,20 @@ extension X on TestEffect {
   Future<void> output<I extends Object?>(Function method, I output) async {
     return effects?.add(Output(method, output, this));
   }
+}
+
+extension StreamEffectX on Stream<Effect> {
+  Future<List<Effect>> collect(Future<void> Function() future) {
+    return collectEffects(this, future);
+  }
+}
+
+Future<List<Effect>> collectEffects(Stream<Effect> effectStream, Future<void> Function() future) async {
+  List<Effect> effects = [];
+  var sub = effectStream.listen((value) => effects.add(value));
+  await future();
+  await Future<void>.value();
+  await Future<void>.value();
+  await sub.cancel();
+  return effects;
 }

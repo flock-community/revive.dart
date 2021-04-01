@@ -7,11 +7,11 @@ environment:
   flutter: ">=2.0.0"
 
 dependencies:
-  rxdart: ^0.26.0
   flutter:
     sdk: flutter
-
+  flutter_hooks:
 dev_dependencies:
+  golden_toolkit:
   freezed_annotation:
   freezed:
   build_runner:

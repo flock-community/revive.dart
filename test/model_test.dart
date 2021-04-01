@@ -17,11 +17,11 @@ void main() {
     });
 
     test('update', () {
-      expect(<Todo>[todo].update(todo.copyWith(body: 'changed')), [Todo('0', 'changed')]);
+      expect([todo].update(todo.copyWith(body: 'changed')), [Todo('0', 'changed')]);
     });
 
     test('delete', () {
-      expect(<Todo>[todo].delete('0'), <Todo>[]);
+      expect([todo].delete('0'), <Todo>[]);
     });
   });
 }
