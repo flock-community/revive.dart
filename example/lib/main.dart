@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:revive/effect/effect.dart';
-import 'package:revive/repository/repository.dart';
-import 'package:revive/revive/state_stream.dart';
 import 'package:revive_example/context/context.dart';
 import 'package:revive_example/view/todo_view.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'app.dart';
 import 'mock/todo.dart';
-import 'model/todo.dart';
 
 void main() {
-  final effects = PublishSubject<Effect>();
-  final $ = TestContext.withEffects([todoMock(description: 'Make revive')]);
-  effects.listen((it) => print('${DateFormat('yyyy-MM-dd hh:mm:ss:SSSS').format(DateTime.now())} ${it}'));
-  $.events.listen((event) => effects.add(Input($.events.listen, event, $.events)));
+  final $ = TestContext([todoMock(description: 'Make revive')]);
+  $.effects.listen((it) => print('${DateFormat('yyyy-MM-dd hh:mm:ss:SSSS').format(DateTime.now())} ${it}'));
+  $.events.listen((event) => $.effects.add(Input($.events.listen, event, $.events)));
   $.events.listen((event) => app($, event));
 
   runApp(View($));

@@ -16,12 +16,12 @@ import 'utils/util.dart';
 void main() {
   group('on todo completed', () {
     testWidgets('both state and backend are updated', iphone8((tester) async {
-      var todo = todoMock(description: 'Brainstorm blogpost');
-      var $ = TestContext.withEffects([todo]);
+      final todo = todoMock(description: 'Brainstorm blogpost');
+      final $ = TestContext([todo]);
       await tester.pumpWidget(View($));
       await expectLater(find.byType(View), matchesGoldenFile('goldens/before_completed.png'));
 
-      var updatedTodo = todo.copyWith(completed: true);
+      final updatedTodo = todo.copyWith(completed: true);
       final effects = await tester.runAsync(() => $.effects.collect(() => onTodoCompleted($, TodoCompleted(todo))));
       expect(
         effects,
@@ -36,10 +36,10 @@ void main() {
     }));
 
     test('on backend failure state is rolled back', () async {
-      var todo = todoMock(description: '');
-      var $ = TestContext.withEffects([todo]).build(($) => $..todoRepo = ErrorTodoRepo($.effects));
+      final todo = todoMock(description: '');
+      final $ = TestContext([todo]).build(($) => $..todoRepo = ErrorTodoRepo($.effects));
+      final updatedTodo = todo.copyWith(completed: true);
 
-      var updatedTodo = todo.copyWith(completed: true);
       expect(
         await $.effects.collect(() => onTodoCompleted($, TodoCompleted(todo))),
         [

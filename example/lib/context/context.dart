@@ -21,11 +21,11 @@ class TestContext with LiveEventStream implements Context {
   Repository<Todo> todoRepo;
   StateStream<List<Todo>> todos;
 
-  TestContext({required this.todoRepo, required this.todos, required this.effects});
+  TestContext._({required this.todoRepo, required this.todos, required this.effects});
 
-  factory TestContext.withEffects([List<Todo> todos = const []]) {
+  factory TestContext([List<Todo> todos = const []]) {
     final effects = PublishSubject<Effect>();
-    return TestContext(
+    return TestContext._(
       effects: effects,
       todoRepo: TestRepository(todos, effects),
       todos: TestStateStream(todos, effects),
