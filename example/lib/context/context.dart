@@ -32,7 +32,5 @@ class TestContext with LiveEventStream implements Context {
     );
   }
 
-  TestContext build(TestContext Function(TestContext $, Subject<Effect> effects) builder) {
-    return builder(this, effects);
-  }
+  TestContext build(TestContext Function(TestContext $) builder) => builder(this);
 }

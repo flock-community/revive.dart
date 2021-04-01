@@ -37,7 +37,7 @@ void main() {
 
     test('on backend failure state is rolled back', () async {
       var todo = todoMock(description: '');
-      var $ = TestContext.withEffects([todo]).build(($, effects) => $..todoRepo = ErrorTodoRepo(effects));
+      var $ = TestContext.withEffects([todo]).build(($) => $..todoRepo = ErrorTodoRepo($.effects));
 
       var updatedTodo = todo.copyWith(completed: true);
       expect(
