@@ -24,9 +24,3 @@ void main() {
     await expectLater(find.byType(View), matchesGoldenFile('goldens/MyApp.png'));
   }));
 }
-
-extension X on WidgetTester {
-  Future<List<Effect>> collectEffects(Subject<Effect> effects, Future<void> Function() future) async {
-    return (await this.runAsync(() => effects.collect(future)))!;
-  }
-}

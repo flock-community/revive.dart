@@ -1,6 +1,9 @@
 import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:revive/effect/effect.dart';
+import 'package:revive/effect/test_effect.dart';
+import 'package:rxdart/rxdart.dart';
 
 Future<void> Function(WidgetTester tester) iphone8(WidgetTesterCallback callback) {
   return (tester) async {
@@ -11,4 +14,10 @@ Future<void> Function(WidgetTester tester) iphone8(WidgetTesterCallback callback
     await callback(tester);
     debugDisableShadows = true;
   };
+}
+
+extension X on WidgetTester {
+  Future<List<Effect>> collectEffects(Subject<Effect> effects, Future<void> Function() future) async {
+    return (await this.runAsync(() => effects.collect(future)))!;
+  }
 }

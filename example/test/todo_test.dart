@@ -22,7 +22,7 @@ void main() {
       await expectLater(find.byType(View), matchesGoldenFile('goldens/before_completed.png'));
 
       final updatedTodo = todo.copyWith(completed: true);
-      final effects = await tester.runAsync(() => $.effects.collect(() => onTodoCompleted($, TodoCompleted(todo))));
+      final effects = await tester.collectEffects($.effects, () => onTodoCompleted($, TodoCompleted(todo)));
       expect(
         effects,
         [
@@ -52,7 +52,7 @@ void main() {
   });
 }
 
-class ErrorTodoRepo extends TestRepository<Todo> implements Repository<Todo> {
+class ErrorTodoRepo extends TestRepository<Todo> {
   ErrorTodoRepo(Subject<Effect> effects) : super([], effects);
 
   Future<void> update(Todo model) async {
