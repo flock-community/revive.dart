@@ -1,58 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:revive/effect/effect.dart';
-import 'package:revive_example/context/context.dart';
-import 'package:revive_example/view/todo_view.dart';
-
-import 'app.dart';
-import 'mock/todo.dart';
+import 'package:revive_example/app.dart';
+import 'package:revive_example/context/test_context.dart';
+import 'package:revive_example/mock/todo.dart';
+import 'package:revive_example/view/view.dart';
 
 void main() {
-  final $ = TestContext([todoMock(description: 'Make revive')]);
+  final $ = TestContext.fromMocks(todos: [todoMock(description: 'Make revive')]);
+
+  // log
   $.effects.listen((it) => print('${DateFormat('yyyy-MM-dd hh:mm:ss:SSSS').format(DateTime.now())} ${it}'));
+  // add events as Input Effect
   $.events.listen((event) => $.effects.add(Input($.events.listen, event, $.events)));
+  // handle events
   $.events.listen((event) => app($, event));
 
   runApp(View($));
-}
-
-abstract class ViewContext implements InboxContext {}
-
-class View extends StatelessWidget {
-  View(this.$);
-
-  final ViewContext $;
-
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Inbox($),
-    );
-  }
-}
-
-abstract class InboxContext implements TodoListContext {}
-
-class Inbox extends StatelessWidget {
-  Inbox(this.$);
-
-  final InboxContext $;
-
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Inbox'),
-      ),
-      body: TodoList($),
-      floatingActionButton: FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Add todo',
-        child: Icon(Icons.add),
-      ),
-    );
-  }
 }

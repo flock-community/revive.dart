@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:revive/effect/effect.dart';
 import 'package:revive/effect/test_effect.dart';
 import 'package:revive/model/model.dart';
 
@@ -16,28 +15,31 @@ abstract class Repository<T extends Model> {
   Future<void> delete(String id);
 }
 
-class TestRepository<T extends Model> implements Repository<T>, TestEffect {
-  TestRepository(this.models, [this.effects]);
+abstract class TestRepositoryContext implements TestEffect {}
 
-  final StreamController<Effect>? effects;
+class TestRepository<T extends Model> implements Repository<T> {
+  TestRepository(this.$, this.models);
+
+  final TestRepositoryContext $;
+
   List<T> models;
 
-  get(String id) => input(get, models.get(id));
+  get(String id) => $.input(get, models.get(id));
 
-  getAll() => input(getAll, this.models);
+  getAll() => $.input(getAll, this.models);
 
   create(T model) async {
     models = models.create(model);
-    await output(create, model);
+    await $.output(create, model);
   }
 
   update(T model) async {
     models = models.update(model);
-    await output(update, model);
+    await $.output(update, model);
   }
 
   delete(String id) async {
     models = models.delete(id);
-    await output(delete, id);
+    await $.output(delete, id);
   }
 }

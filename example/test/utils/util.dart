@@ -15,9 +15,3 @@ Future<void> Function(WidgetTester tester) iphone8(WidgetTesterCallback callback
     debugDisableShadows = true;
   };
 }
-
-extension X on WidgetTester {
-  Future<List<Effect>> collectEffects(Subject<Effect> effects, Future<void> Function() future) async {
-    return (await this.runAsync(() => effects.collect(future)))!;
-  }
-}

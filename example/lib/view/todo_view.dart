@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:revive/revive/use_state_stream.dart';
@@ -14,12 +15,10 @@ class TodoList extends HookWidget {
   final TodoListContext $;
 
   Widget build(context) {
-    final todos = useStateStream($.todos);
-    return ListView(
-      children: [
-        for (var todo in todos) ...[TodoTile($, todo), Divider()]
-      ],
-    );
+    final todos = useStateStream($.todos, $.todos.stream.distinct(DeepCollectionEquality().equals));
+    return ListView(children: [
+      for (var todo in todos) ...[TodoTile($, todo), Divider()]
+    ]);
   }
 }
 
@@ -35,7 +34,7 @@ class TodoTile extends StatelessWidget {
     return ListTile(
       key: Key(todo.id),
       leading: IconButton(
-        onPressed: () => $.events.add(Event.onTodoCompleted(todo)),
+        onPressed: todo.completed ? null : () => $.events.add(TodoCompleted(todo)),
         icon: Icon(todo.completed ? Icons.check_circle_outline : Icons.radio_button_unchecked),
       ),
       title: Text(todo.description),

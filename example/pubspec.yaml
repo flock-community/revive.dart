@@ -21,11 +21,11 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  kt_dart:
   flutter_hooks:
   collection:
   intl:
   rxdart:
-    git: "https://github.com/ReactiveX/rxdart"
   revive:
     path: "../../revive"
   flutter:

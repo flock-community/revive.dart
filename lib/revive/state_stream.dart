@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:revive/effect/effect.dart';
+import 'package:revive/effect/test_effect.dart';
 import 'package:revive/revive/reviver.dart';
 
 class StateStream<State> {
-  StateStream(State state)
+  StateStream(State state, [StreamController<State>? streamController])
       : _state = state,
-        _streamController = StreamController.broadcast();
+        _streamController = streamController ?? StreamController.broadcast(sync: false);
 
   final StreamController<State> _streamController;
 
@@ -17,8 +18,8 @@ class StateStream<State> {
   State get state => _state;
 
   set state(State state) {
-    _streamController.add(state);
     _state = state;
+    _streamController.add(state);
   }
 
   void revive(Reviver<State> reviver) {
@@ -26,15 +27,16 @@ class StateStream<State> {
   }
 }
 
-class TestStateStream<State> extends StateStream<State> {
-  TestStateStream(State state, [StreamController<Effect>? effects])
-      : effects = effects ?? StreamController.broadcast(),
-        super(state);
+abstract class TestStateStreamContext implements TestEffect {}
 
-  final StreamController<Effect> effects;
+class TestStateStream<State> extends StateStream<State> {
+  TestStateStream(this.$, State state, [StreamController<State>? streamController])
+      : super(state, streamController ?? StreamController.broadcast(sync: true));
+
+  final TestStateStreamContext $;
 
   set state(State state) {
-    effects.add(Output(revive, state, this));
+    $.effects.add(Output(revive, state, this));
     super.state = state;
   }
 }
