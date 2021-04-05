@@ -22,6 +22,7 @@ environment:
 
 dependencies:
   kt_dart:
+  time:
   flutter_hooks:
   collection:
   intl:

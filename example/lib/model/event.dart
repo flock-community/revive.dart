@@ -6,7 +6,10 @@ part 'event.g.dart';
 
 @freezed
 class Event with _$Event {
+  factory Event.onAppStarted() = AppStarted;
   factory Event.onTodoCompleted(Todo todo) = TodoCompleted;
+  factory Event.onInboxOpened() = InboxOpened;
+  factory Event.onTodayOpened() = TodayOpened;
 
   factory Event.fromJson(Map<String, Object> json) => _$EventFromJson(json);
 }

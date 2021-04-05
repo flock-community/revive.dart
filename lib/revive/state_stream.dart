@@ -4,14 +4,36 @@ import 'package:revive/effect/effect.dart';
 import 'package:revive/effect/test_effect.dart';
 import 'package:revive/revive/reviver.dart';
 
-class StateStream<State> {
-  StateStream(State state, [StreamController<State>? streamController])
+class StateStream<State> extends StreamView<State> {
+  StateStream(this.stream, this.state) : super(stream);
+
+  final Stream<State> stream;
+  final State state;
+
+  @override
+  StateStream<R> map<R>(R convert(State event)) {
+    return StateStream(stream.map(convert), convert(state));
+  }
+
+  @override
+  Stream<State> where(bool test(State event)) {
+    return StateStream(stream.where(test), state);
+  }
+
+  @override
+  Stream<State> distinct([bool equals(State previous, State next)?]) {
+    return StateStream(stream.distinct(equals), state);
+  }
+}
+
+class StateSubject<State> {
+  StateSubject(State state, [StreamController<State>? streamController])
       : _state = state,
         _streamController = streamController ?? StreamController.broadcast(sync: false);
 
   final StreamController<State> _streamController;
 
-  Stream<State> get stream => _streamController.stream;
+  StateStream<State> get stream => StateStream(_streamController.stream, state);
 
   State _state;
 
@@ -22,6 +44,12 @@ class StateStream<State> {
     _streamController.add(state);
   }
 
+  Future<void> setFromStream(Stream<State> stream) async {
+    await for (var newState in stream) {
+      state = newState;
+    }
+  }
+
   void revive(Reviver<State> reviver) {
     state = reviver(state);
   }
@@ -29,7 +57,7 @@ class StateStream<State> {
 
 abstract class TestStateStreamContext implements TestEffect {}
 
-class TestStateStream<State> extends StateStream<State> {
+class TestStateStream<State> extends StateSubject<State> {
   TestStateStream(this.$, State state, [StreamController<State>? streamController])
       : super(state, streamController ?? StreamController.broadcast(sync: true));
 

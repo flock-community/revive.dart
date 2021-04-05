@@ -1,6 +1,8 @@
 import 'package:revive/revive/state_stream.dart';
+import 'package:revive_example/model/async.dart';
+import 'package:revive_example/model/async_exception.dart';
 import 'package:revive_example/model/todo.dart';
 
 abstract class Todos {
-  abstract final StateStream<List<Todo>> todos;
+  abstract final StateSubject<Async<List<Todo>, AsyncException>> todos;
 }

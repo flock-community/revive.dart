@@ -4,7 +4,10 @@ import 'package:revive/effect/test_effect.dart';
 import 'package:revive/repository/repository.dart';
 import 'package:revive/revive/state_stream.dart';
 import 'package:revive_example/context/context.dart';
+import 'package:revive_example/model/async.dart';
+import 'package:revive_example/model/async_exception.dart';
 import 'package:revive_example/model/event.dart';
+import 'package:revive_example/model/route.dart';
 import 'package:revive_example/model/todo.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -18,21 +21,24 @@ class TestContext with _$TestContext implements Context, TestEffect {
     required TestLayer layer,
     required Subject<Event> events,
     required Repository<Todo> todoRepo,
-    required StateStream<List<Todo>> todos,
+    required StateSubject<Async<List<Todo>, AsyncException>> todos,
+    required StateSubject<Route> route,
   }) = _TestContext;
 
   factory TestContext({
     TestLayer? layer,
     Subject<Event>? events,
     Repository<Todo>? todoRepo,
-    StateStream<List<Todo>>? todos,
+    StateSubject<Async<List<Todo>, AsyncException>>? todos,
+    StateSubject<Route>? route,
   }) {
-    layer = layer ?? TestLayer(effects: PublishSubject());
+    layer = layer ?? TestLayer();
     return TestContext.raw(
       layer: layer,
       events: events ?? PublishSubject(),
       todoRepo: todoRepo ?? TestRepository(layer, []),
-      todos: todos ?? TestStateStream(layer, []),
+      todos: todos ?? TestStateStream(layer, Async.none(NotLoaded())),
+      route: route ?? TestStateStream(layer, Route.inbox()),
     );
   }
 
@@ -41,7 +47,7 @@ class TestContext with _$TestContext implements Context, TestEffect {
     return TestContext(
       layer: layer,
       todoRepo: TestRepository(layer, todos),
-      todos: TestStateStream(layer, todos),
+      todos: TestStateStream(layer, Async.done(todos)),
     );
   }
 

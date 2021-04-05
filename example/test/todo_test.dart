@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kt_dart/kt.dart';
 import 'package:revive/effect/effect.dart';
@@ -28,7 +26,7 @@ void main() {
 
       final effects = await $.collectEffects(() => onTodoCompleted($, TodoCompleted(todo)));
       expect(effects, [
-        Output($.todos.revive, [updatedTodo]),
+        Output($.todos.revive, [updatedTodo].done()),
         Output($.todoRepo.update, updatedTodo),
       ]);
 
@@ -39,25 +37,16 @@ void main() {
     test('on backend failure state is rolled back', () async {
       final $ = TestLayer().let(($) => TestContext(
             layer: $,
-            todoRepo: ErrorTodoRepo($, [todo]),
-            todos: TestStateStream($, [todo]),
+            todoRepo: TestRepository($, [todo], update: (models, model) => throw Exception()),
+            todos: TestStateStream($, [todo].done()),
           ));
 
       final effects = await $.collectEffects(() => onTodoCompleted($, TodoCompleted(todo)));
       expect(effects, [
-        Output($.todos.revive, [updatedTodo]),
+        Output($.todos.revive, [updatedTodo].done()),
         Output($.todoRepo.update, updatedTodo),
-        Output($.todos.revive, [todo]),
+        Output($.todos.revive, [todo].done()),
       ]);
     });
   });
-}
-
-class ErrorTodoRepo extends TestRepository<Todo> {
-  ErrorTodoRepo(TestRepositoryContext $, List<Todo> todos) : super($, todos);
-
-  Future<void> update(Todo model) async {
-    await super.update(model);
-    throw Exception();
-  }
 }
