@@ -1,5 +1,5 @@
 import 'package:revive/revive/state_stream.dart';
-import 'package:revive_example/model/async.dart';
+import 'package:revive/model/async.dart';
 import 'package:revive_example/model/async_exception.dart';
 import 'package:revive_example/model/todo.dart';
 

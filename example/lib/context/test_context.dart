@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:revive/effect/effect.dart';
 import 'package:revive/effect/test_effect.dart';
+import 'package:revive/model/async.dart';
 import 'package:revive/repository/repository.dart';
 import 'package:revive/revive/state_stream.dart';
 import 'package:revive_example/context/context.dart';
-import 'package:revive_example/model/async.dart';
 import 'package:revive_example/model/async_exception.dart';
 import 'package:revive_example/model/event.dart';
 import 'package:revive_example/model/route.dart';
@@ -37,7 +37,7 @@ class TestContext with _$TestContext implements Context, TestEffect {
       layer: layer,
       events: events ?? PublishSubject(),
       todoRepo: todoRepo ?? TestRepository(layer, []),
-      todos: todos ?? TestStateStream(layer, Async.none(NotLoaded())),
+      todos: todos ?? TestStateStream(layer, Async.none(NotLoaded(), loading: false)),
       route: route ?? TestStateStream(layer, Route.inbox()),
     );
   }
@@ -47,7 +47,7 @@ class TestContext with _$TestContext implements Context, TestEffect {
     return TestContext(
       layer: layer,
       todoRepo: TestRepository(layer, todos),
-      todos: TestStateStream(layer, Async.done(todos)),
+      todos: TestStateStream(layer, Async.done(todos, loading: false)),
     );
   }
 

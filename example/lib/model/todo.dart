@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:revive/model/model.dart';
-import 'package:revive_example/model/async.dart';
+import 'package:revive/model/async.dart';
 import 'package:revive_example/model/async_exception.dart';
 import 'package:time/time.dart';
 
@@ -24,5 +24,5 @@ extension TodoX on Todo {
 }
 
 extension TodosX on List<Todo> {
-  Done<List<Todo>, AsyncException> done() => Done(this);
+  Done<List<Todo>, AsyncException> done() => Done(this, loading: false);
 }

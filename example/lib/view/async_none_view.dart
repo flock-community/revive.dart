@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:revive_example/model/async.dart';
+import 'package:revive/model/async.dart';
 import 'package:revive_example/model/async_exception.dart';
 
 class AsyncNoneView extends StatelessWidget {

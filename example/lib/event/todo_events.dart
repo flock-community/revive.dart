@@ -1,4 +1,4 @@
-import 'package:revive_example/model/async.dart';
+import 'package:revive/model/async.dart';
 import 'package:revive_example/model/event.dart';
 import 'package:revive_example/model/route.dart';
 import 'package:revive_example/service/route_state.dart';
@@ -9,19 +9,19 @@ abstract class OnTodoCompleted implements TodoRepo, Todos {}
 
 Future<void> onTodoCompleted(OnTodoCompleted $, TodoCompleted event) async {
   final newTodo = event.todo.copyWith(completed: true);
-  $.todos.revive(update(newTodo));
+  $.todos.revive((it) => it.update(newTodo));
   try {
     await $.todoRepo.update(newTodo);
   } catch (e) {
     // rollback
-    $.todos.revive(update(event.todo));
+    $.todos.revive((it) => it.update(event.todo));
   }
 }
 
 abstract class OnStartApp implements RouteState, Todos, TodoRepo {}
 
 Future<void> onStartApp(OnStartApp $, AppStarted event) async {
-  var future = $.todos.setFromStream($.todos.state.update(() => $.todoRepo.getAll()));
+  var future = $.todos.setFromStream($.todos.state.load(() => $.todoRepo.getAll()));
   $.route.state = Route.inbox();
   await future;
 }
@@ -29,7 +29,7 @@ Future<void> onStartApp(OnStartApp $, AppStarted event) async {
 abstract class OnTodayOpened implements RouteState, Todos, TodoRepo {}
 
 Future<void> onTodayOpened(OnTodayOpened $, TodayOpened event) async {
-  var future = $.todos.setFromStream($.todos.state.update(() => $.todoRepo.getAll()));
+  var future = $.todos.setFromStream($.todos.state.load(() => $.todoRepo.getAll()));
   $.route.state = Route.today();
   await future;
 }
@@ -37,7 +37,7 @@ Future<void> onTodayOpened(OnTodayOpened $, TodayOpened event) async {
 abstract class OnInboxOpened implements RouteState, Todos, TodoRepo {}
 
 Future<void> onInboxOpened(OnInboxOpened $, InboxOpened event) async {
-  var future = $.todos.setFromStream($.todos.state.update(() => $.todoRepo.getAll()));
+  var future = $.todos.setFromStream($.todos.state.load(() => $.todoRepo.getAll()));
   $.route.state = Route.inbox();
   await future;
 }
