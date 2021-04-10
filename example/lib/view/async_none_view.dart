@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:revive/model/async.dart';
 import 'package:revive_example/model/async_exception.dart';
+import 'package:revive_example/widgets.dart';
 
 class AsyncNoneView extends StatelessWidget {
   const AsyncNoneView(
@@ -10,7 +10,6 @@ class AsyncNoneView extends StatelessWidget {
 
   final None<Object?, AsyncException> asyncNone;
 
-  @override
   Widget build(BuildContext context) {
     if (asyncNone.loading) {
       return Center(child: CircularProgressIndicator());

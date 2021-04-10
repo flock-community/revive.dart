@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart' hide Route;
 import 'package:revive_example/model/event.dart';
+import 'package:revive_example/model/route.dart';
 import 'package:revive_example/service/events.dart';
+import 'package:revive_example/service/route_state.dart';
+import 'package:revive_example/view/create_todo.dart';
+import 'package:revive_example/widgets.dart';
 
-abstract class MyScaffoldContext implements EventStream {}
+abstract class MyScaffoldContext implements RouteState, EventStream, CreateTodoContext {}
 
 class MyScaffold extends StatelessWidget {
   const MyScaffold(
@@ -16,7 +19,6 @@ class MyScaffold extends StatelessWidget {
   final Widget body;
   final Widget title;
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
@@ -50,7 +52,9 @@ class MyScaffold extends StatelessWidget {
       appBar: AppBar(title: title),
       body: body,
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
+        onPressed: () {
+          $.route.revive((it) => it.addModal(CreateTodoForm()));
+        },
         tooltip: 'Add todo',
         child: Icon(Icons.add),
       ),

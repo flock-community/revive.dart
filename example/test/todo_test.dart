@@ -14,7 +14,7 @@ import 'package:revive_example/view/view.dart';
 import 'utils/util.dart';
 
 void main() {
-  final todo = todoMock(description: 'Brainstorm blogpost');
+  final todo = todoMock(TestLayer(), description: 'Brainstorm blogpost');
   final updatedTodo = todo.copyWith(completed: true);
 
   group('on todo completed', () {

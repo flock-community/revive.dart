@@ -22,49 +22,49 @@ class TestRepository<T extends Model> implements Repository<T>, TestEffect {
   TestRepository(
     this.$,
     this.models, {
-    Future<T?> Function(List<T> models, String id)? get,
-    Future<List<T>> Function(List<T> models)? getAll,
-    Future<void> Function(List<T> models, T model)? create,
-    Future<void> Function(List<T> models, T model)? update,
-    Future<void> Function(List<T> models, String id)? delete,
+    Future<T?> Function(TestRepository<T> self, String id)? get,
+    Future<List<T>> Function(TestRepository<T> self)? getAll,
+    Future<void> Function(TestRepository<T> self, T model)? create,
+    Future<void> Function(TestRepository<T> self, T model)? update,
+    Future<void> Function(TestRepository<T> self, String id)? delete,
     this.createFn,
-  })  : _get = get ?? ((models, id) async => models.get(id)),
-        _getAll = getAll ?? ((models) async => models),
-        _create = create ?? ((models, model) async => models = models.create(model)),
-        _update = update ?? ((models, model) async => models = models.update(model)),
-        _delete = delete ?? ((models, id) async => models = models.delete(id));
+  })  : _get = get ?? ((self, id) async => self.models.get(id)),
+        _getAll = getAll ?? ((self) async => self.models),
+        _create = create ?? ((self, model) async => self.models = self.models.create(model)),
+        _update = update ?? ((self, model) async => self.models = self.models.update(model)),
+        _delete = delete ?? ((self, id) async => self.models = self.models.delete(id));
 
   final TestRepositoryContext $;
 
   StreamController<Effect> get effects => $.effects;
 
   List<T> models;
-  Future<T?> Function(List<T> models, String id) _get;
-  Future<List<T>> Function(List<T> models) _getAll;
-  Future<void> Function(List<T> models, T model) _create;
-  Future<void> Function(List<T> models, T model) _update;
-  Future<void> Function(List<T> models, String id) _delete;
+  Future<T?> Function(TestRepository<T> self, String id) _get;
+  Future<List<T>> Function(TestRepository<T> self) _getAll;
+  Future<void> Function(TestRepository<T> self, T model) _create;
+  Future<void> Function(TestRepository<T> self, T model) _update;
+  Future<void> Function(TestRepository<T> self, String id) _delete;
 
-  get(String id) async => input(get, await _get(models, id));
+  get(String id) async => input(get, await _get(this, id));
 
   getAll() async {
-    return $.input(getAll, await _getAll(models));
+    return $.input(getAll, await _getAll(this));
   }
 
   Future<void> Function(List<T>, T)? createFn;
 
   create(T model) async {
     await output(create, model);
-    await _create(models, model);
+    await _create(this, model);
   }
 
   update(T model) async {
     await output(update, model);
-    await _update(models, model);
+    await _update(this, model);
   }
 
   delete(String id) async {
     await output(delete, id);
-    await _delete(models, id);
+    await _delete(this, id);
   }
 }

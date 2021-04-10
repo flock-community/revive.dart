@@ -7,7 +7,7 @@ import 'utils/util.dart';
 
 void main() {
   testWidgets('View', iphone8((tester) async {
-    final todo = todoMock(description: 'Make revive');
+    final todo = todoMock(TestLayer(), description: 'Make revive');
     final $ = TestContext.fromMocks(todos: [todo]);
     await tester.pumpWidget(View($));
     await expectLater(find.byType(View), matchesGoldenFile('goldens/View.png'));

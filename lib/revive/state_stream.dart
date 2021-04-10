@@ -16,12 +16,17 @@ class StateStream<State> extends StreamView<State> {
   }
 
   @override
-  Stream<State> where(bool test(State event)) {
+  StateStream<State> where(bool test(State event)) {
     return StateStream(stream.where(test), state);
   }
 
   @override
-  Stream<State> distinct([bool equals(State previous, State next)?]) {
+  StateStream<R> cast<R>() {
+    return StateStream(stream.cast<R>(), state as R);
+  }
+
+  @override
+  StateStream<State> distinct([bool equals(State previous, State next)?]) {
     return StateStream(stream.distinct(equals), state);
   }
 }
