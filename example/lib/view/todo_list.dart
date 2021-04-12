@@ -42,7 +42,20 @@ class TodoTile extends StatelessWidget {
         ),
       ),
       title: Text(todo.description),
-      subtitle: todo.dueDate?.let((it) => Text(DateFormat('d MMMM yyyy').format(it))),
+      subtitle: todo.dueDate?.let(
+        (it) => Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.event,
+              size: 16,
+              color: Theme.of(context).textTheme.caption!.color,
+            ),
+            SizedBox(width: 3),
+            Text(DateFormat('d MMMM yyyy').format(it)),
+          ],
+        ),
+      ),
     );
   }
 }
