@@ -2,11 +2,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:revive/effect/effect.dart';
 import 'package:revive/effect/test_effect.dart';
 import 'package:revive/model/async.dart';
+import 'package:revive/service/clock.dart';
 import 'package:revive/repository/repository.dart';
 import 'package:revive/revive/state_stream.dart';
 import 'package:revive_example/context/context.dart';
 import 'package:revive_example/mock/todo.dart';
-import 'package:revive_example/service/id_generator.dart';
+import 'package:revive/service/id_generator.dart';
 import 'package:revive_example/widgets.dart';
 import 'package:revive_example/model/async_exception.dart';
 import 'package:revive_example/model/event.dart';
@@ -31,6 +32,7 @@ class TestContext with _$TestContext, FlutterNavigator, FlutterMessenger impleme
     required GlobalKey<NavigatorState> navigatorKey,
     required GlobalKey<ScaffoldMessengerState> messengerKey,
     required IdGenerator id,
+    required Clock clock,
   }) = _TestContext;
 
   factory TestContext({
@@ -52,15 +54,17 @@ class TestContext with _$TestContext, FlutterNavigator, FlutterMessenger impleme
       navigatorKey: navigatorKey ?? GlobalKey(),
       messengerKey: messengerKey ?? GlobalKey(),
       id: layer.id,
+      clock: layer.clock,
     );
   }
 
-  factory TestContext.fromMocks({List<Todo> todos = const []}) {
+  factory TestContext.fromData({List<Todo> todos = const [], Route route = const Route.inbox()}) {
     final layer = TestLayer();
     return TestContext(
       layer: layer,
       todoRepo: TestRepository(layer, todos),
       todos: TestStateStream(layer, Async.done(todos, loading: false)),
+      route: TestStateStream(layer, route),
     );
   }
 }
@@ -69,15 +73,21 @@ class TestContext with _$TestContext, FlutterNavigator, FlutterMessenger impleme
 class TestLayer with _$TestLayer implements TodoMock, TestRepositoryContext, TestStateStreamContext {
   TestLayer._();
 
-  factory TestLayer.raw({required Subject<Effect> effects, required IdGenerator id}) = _TestLayer;
+  factory TestLayer.raw({
+    required Subject<Effect> effects,
+    required IdGenerator id,
+    required Clock clock,
+  }) = _TestLayer;
 
   factory TestLayer({
     Subject<Effect>? effects,
     IdGenerator? id,
+    Clock? clock,
   }) {
     return TestLayer.raw(
       effects: effects ?? PublishSubject(sync: true),
       id: id ?? TestIdGenerator(),
+      clock: clock ?? TestClock(DateTime(2020, 1, 1, 12)),
     );
   }
 }

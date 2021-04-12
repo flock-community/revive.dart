@@ -1,9 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:revive/model/model.dart';
 import 'package:revive/model/async.dart';
+import 'package:revive/service/clock.dart';
 import 'package:revive_example/model/async_exception.dart';
-import 'package:revive_example/service/id_generator.dart';
-import 'package:time/time.dart';
+import 'package:revive/service/id_generator.dart';
+import 'package:revive_example/util/extensions.dart';
 
 part 'todo.freezed.dart';
 
@@ -15,13 +16,14 @@ class Todo with _$Todo implements Model {
     required String id,
     required String description,
     required bool completed,
+    required DateTime createdAt,
     DateTime? dueDate,
   }) = _Todo;
 
   factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
 }
 
-abstract class CreateTodo implements WithIdGenerator {}
+abstract class CreateTodo implements WithClock, WithIdGenerator {}
 
 Todo createTodo(
   CreateTodo $, {
@@ -30,6 +32,7 @@ Todo createTodo(
   DateTime? dueDate,
 }) {
   return Todo(
+    createdAt: $.clock.now(),
     id: $.id.generate(),
     description: description,
     completed: completed,
@@ -37,10 +40,10 @@ Todo createTodo(
   );
 }
 
-extension TodoX on Todo {
-  bool dueToday() => this.dueDate?.isToday ?? false;
+extension XTodo on Todo {
+  bool dueToday(DateTime now) => dueDate?.isAtSameDayAs(now) ?? false;
 }
 
-extension TodosX on List<Todo> {
+extension XTodos on List<Todo> {
   Done<List<Todo>, AsyncException> done() => Done(this, loading: false);
 }

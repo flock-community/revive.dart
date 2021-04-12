@@ -33,7 +33,7 @@ class Async<T, E extends Object> with _$Async<T, E> {
   }
 }
 
-extension AsyncList<T extends Model, E extends Object> on Async<List<T>, E> {
+extension XAsyncModels<T extends Model, E extends Object> on Async<List<T>, E> {
   Done<List<T>, E> create(T model) {
     var done = assertDone();
     return done.copyWith(data: done.data.create(model));

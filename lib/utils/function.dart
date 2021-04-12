@@ -1,4 +1,4 @@
-extension X on Function {
+extension XFunction on Function {
   /// Very hacky way to get the name of a method, which doesn't work for web.
   /// Please let me know if you know a better way without reflection.
   String get name {

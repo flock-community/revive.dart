@@ -10,8 +10,8 @@ import 'package:revive_example/widgets.dart';
 
 abstract class InboxContext implements EventStream, TodoListContext, Todos, MyScaffoldContext {}
 
-class InboxView extends HookWidget {
-  const InboxView(this.$);
+class InboxPage extends HookWidget {
+  const InboxPage(this.$);
 
   final InboxContext $;
 

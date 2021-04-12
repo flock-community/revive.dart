@@ -1,5 +1,6 @@
 import 'package:revive_example/model/event.dart';
 import 'package:revive_example/model/route.dart';
+import 'package:revive_example/model/todo_form.dart';
 import 'package:revive_example/service/events.dart';
 import 'package:revive_example/service/route_state.dart';
 import 'package:revive_example/view/create_todo.dart';
@@ -53,7 +54,7 @@ class MyScaffold extends StatelessWidget {
       body: body,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          $.route.revive((it) => it.addModal(CreateTodoForm()));
+          $.route.revive((it) => it.addModal(CreateTodoModal(form: TodoForm())));
         },
         tooltip: 'Add todo',
         child: Icon(Icons.add),

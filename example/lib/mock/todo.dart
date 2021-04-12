@@ -1,7 +1,8 @@
+import 'package:revive/service/clock.dart';
 import 'package:revive_example/model/todo.dart';
-import 'package:revive_example/service/id_generator.dart';
+import 'package:revive/service/id_generator.dart';
 
-abstract class TodoMock implements WithIdGenerator {}
+abstract class TodoMock implements WithClock, WithIdGenerator {}
 
 Todo todoMock(
   TodoMock $, {
@@ -11,6 +12,7 @@ Todo todoMock(
   DateTime? dueDate,
 }) {
   return Todo(
+    createdAt: $.clock.now(),
     id: id ?? $.id.generate(),
     description: description,
     completed: completed,

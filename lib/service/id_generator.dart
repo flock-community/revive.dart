@@ -7,7 +7,7 @@ abstract class IdGenerator {
 }
 
 class TestIdGenerator implements IdGenerator {
-  final Iterator<String> _iterator = naturals().iterator;
+  final Iterator<String> _iterator = naturals().map((it) => '${it}').iterator;
 
   String generate() {
     _iterator.moveNext();
@@ -15,8 +15,8 @@ class TestIdGenerator implements IdGenerator {
   }
 }
 
-Iterable<String> naturals() sync* {
+Iterable<int> naturals() sync* {
   for (var n = 0;; n = n + 1) {
-    yield '$n';
+    yield n;
   }
 }

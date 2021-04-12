@@ -12,7 +12,7 @@ class Event with _$Event {
   factory Event.onInboxOpened() = InboxOpened;
   factory Event.onTodayOpened() = TodayOpened;
   factory Event.onTodoCompleted(Todo todo) = TodoCompleted;
-  factory Event.onTodoFormSubmitted({required String description, required CreateTodoForm modal}) = TodoFormSubmitted;
+  factory Event.onCreateTodoFormSubmitted({required CreateTodoModal modal}) = CreateTodoFormSubmitted;
 
   factory Event.fromJson(Map<String, Object> json) => _$EventFromJson(json);
 }

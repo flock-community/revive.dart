@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:revive/effect/effect.dart';
 import 'package:revive/effect/test_effect.dart';
 import 'package:revive/model/model.dart';
+import 'package:revive/service/clock.dart';
 
 abstract class Repository<T extends Model> {
   Future<T?> get(String id);
@@ -16,12 +17,13 @@ abstract class Repository<T extends Model> {
   Future<void> delete(String id);
 }
 
-abstract class TestRepositoryContext implements TestEffect {}
+abstract class TestRepositoryContext implements TestEffect, WithClock {}
 
 class TestRepository<T extends Model> implements Repository<T>, TestEffect {
   TestRepository(
     this.$,
     this.models, {
+    this.delay,
     Future<T?> Function(TestRepository<T> self, String id)? get,
     Future<List<T>> Function(TestRepository<T> self)? getAll,
     Future<void> Function(TestRepository<T> self, T model)? create,
@@ -38,6 +40,7 @@ class TestRepository<T extends Model> implements Repository<T>, TestEffect {
 
   StreamController<Effect> get effects => $.effects;
 
+  Duration Function()? delay;
   List<T> models;
   Future<T?> Function(TestRepository<T> self, String id) _get;
   Future<List<T>> Function(TestRepository<T> self) _getAll;
@@ -48,6 +51,7 @@ class TestRepository<T extends Model> implements Repository<T>, TestEffect {
   get(String id) async => input(get, await _get(this, id));
 
   getAll() async {
+    await _delay();
     return $.input(getAll, await _getAll(this));
   }
 
@@ -55,16 +59,24 @@ class TestRepository<T extends Model> implements Repository<T>, TestEffect {
 
   create(T model) async {
     await output(create, model);
+    await _delay();
     await _create(this, model);
   }
 
   update(T model) async {
     await output(update, model);
+    await _delay();
     await _update(this, model);
   }
 
   delete(String id) async {
     await output(delete, id);
+    await _delay();
     await _delete(this, id);
+  }
+
+  Future<void> _delay() async {
+    var sleep = delay?.call();
+    if (sleep != null) await $.clock.sleep(sleep);
   }
 }

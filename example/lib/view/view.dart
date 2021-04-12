@@ -32,8 +32,8 @@ class View extends HookWidget {
           MaterialPage<void>(
             key: ValueKey(route.runtimeType),
             child: route.when(
-              inbox: (_) => InboxView($),
-              today: (_) => TodayView($),
+              inbox: (_) => InboxPage($),
+              today: (_) => TodayPage($),
             ),
           ),
           if (modal != null)
@@ -41,7 +41,7 @@ class View extends HookWidget {
               key: ValueKey(modal.runtimeType),
               maintainState: false,
               child: modal.map(
-                createTodo: (it) => CreateTodo($, it),
+                createTodo: (it) => CreateTodoPage($, it),
               ),
             )
         ],

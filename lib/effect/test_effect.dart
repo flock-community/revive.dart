@@ -6,7 +6,7 @@ abstract class TestEffect {
   abstract final StreamController<Effect> effects;
 }
 
-extension X on TestEffect {
+extension XTestEffect on TestEffect {
   Future<I> io<I extends Object?, O extends Object?>(
     Function method, {
     required O output,
@@ -27,9 +27,7 @@ extension X on TestEffect {
   Future<void> output<I extends Object?>(Function method, I output) async {
     return effects.add(Output(method, output, this));
   }
-}
 
-extension CollectEffects on TestEffect {
   Future<List<Effect>> collectEffects(Future<void> Function() callback) async {
     List<Effect> collected = [];
     var sub = this.effects.stream.listen(collected.add);

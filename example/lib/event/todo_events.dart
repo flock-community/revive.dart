@@ -4,6 +4,7 @@ import 'package:revive_example/event/undo_todo_message.dart';
 import 'package:revive_example/model/event.dart';
 import 'package:revive_example/model/route.dart';
 import 'package:revive_example/model/todo.dart';
+import 'package:revive_example/model/todo_form.dart';
 import 'package:revive_example/service/messenger.dart';
 import 'package:revive_example/service/route_state.dart';
 import 'package:revive_example/service/todo_repo.dart';
@@ -22,20 +23,20 @@ Future<void> onTodoCompleted(OnTodoCompleted $, TodoCompleted event) async {
   }
 }
 
-abstract class OnTodoFormSubmitted
-    implements UndoTodoMessage, Messenger, CreateTodo, RouteTo, RouteState, TodoRepo, Todos {}
+abstract class OnCreateTodoFormSubmitted
+    implements TodoFormConsume, RouteState, TodoRepo, Todos, UndoTodoMessage, Messenger, RouteTo {}
 
-Future<void> onTodoFormSubmitted(OnTodoFormSubmitted $, TodoFormSubmitted event) async {
-  var modal = event.modal;
-  $.route.revive((it) => it.updateModal(modal.copyWith(submitting: true)));
+Future<void> onCreateTodoFormSubmitted(OnCreateTodoFormSubmitted $, CreateTodoFormSubmitted event) async {
+  final modal = event.modal;
+  final todo = modal.form.consume($);
+  $.route.revive((it) => it.updateModal(modal.copyWith.form(submitting: true)));
   try {
-    var todo = createTodo($, description: event.description);
     await $.todoRepo.create(todo);
     $.todos.revive((it) => it.create(todo));
     $.messenger.showSnackBar(undoTodoMessage($, todo));
     await routeTo($, $.route.state.copyWith(modal: null));
   } catch (_) {
-    $.route.revive((it) => it.updateModal(modal.copyWith(submitting: false)));
+    $.route.revive((it) => it.updateModal(modal.copyWith.form(submitting: false)));
     rethrow;
   }
 }
