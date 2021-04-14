@@ -20,6 +20,7 @@ class Route with _$Route {
 @freezed
 class Modal with _$Modal {
   const factory Modal.createTodo({required TodoForm form}) = CreateTodoModal;
+  const factory Modal.updateTodo({required TodoForm form}) = UpdateTodoModal;
 
   factory Modal.fromJson(Map<String, Object> json) => _$ModalFromJson(json);
 }

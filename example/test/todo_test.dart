@@ -38,7 +38,11 @@ void main() {
       final $ = TestLayer().let(
         ($) => TestContext(
           layer: $,
-          todoRepo: TestRepository($, [todo], update: (models, model) => throw Exception()),
+          todoRepo: TestRepository(
+            $,
+            [todo],
+            update: (models, model) => throw Exception(),
+          ),
           todos: TestStateStream($, [todo].done()),
         ),
       );

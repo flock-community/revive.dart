@@ -16,13 +16,14 @@ class StateStream<State> extends StreamView<State> {
   }
 
   @override
-  StateStream<State> where(bool test(State event)) {
-    return StateStream(stream.where(test), state);
-  }
+  Future<List<State>> toList() async => [state, ...await stream.toList()];
 
   @override
-  StateStream<R> cast<R>() {
-    return StateStream(stream.cast<R>(), state as R);
+  Future<State> get first async => state;
+
+  @override
+  StateStream<State> where(bool test(State event)) {
+    return StateStream(stream.where(test), state);
   }
 
   @override
@@ -34,11 +35,11 @@ class StateStream<State> extends StreamView<State> {
 class StateSubject<State> {
   StateSubject(State state, [StreamController<State>? streamController])
       : _state = state,
-        _streamController = streamController ?? StreamController.broadcast(sync: false);
+        controller = streamController ?? StreamController.broadcast(sync: false);
 
-  final StreamController<State> _streamController;
+  final StreamController<State> controller;
 
-  StateStream<State> get stream => StateStream(_streamController.stream, state);
+  StateStream<State> get stream => StateStream(controller.stream, state);
 
   State _state;
 
@@ -46,12 +47,14 @@ class StateSubject<State> {
 
   set state(State state) {
     _state = state;
-    _streamController.add(state);
+    controller.add(state);
   }
 
-  Future<void> setFromStream(Stream<State> stream) async {
+  Future<void> setFromStream(Stream<State> stream, [bool cancelOnChanged = true]) async {
+    var previousState = state;
     await for (var newState in stream) {
-      state = newState;
+      if (cancelOnChanged && !identical(previousState, state)) break;
+      state = previousState = newState;
     }
   }
 

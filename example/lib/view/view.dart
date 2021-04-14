@@ -42,6 +42,7 @@ class View extends HookWidget {
               maintainState: false,
               child: modal.map(
                 createTodo: (it) => CreateTodoPage($, it),
+                updateTodo: (it) => UpdateTodoPage($, it),
               ),
             )
         ],

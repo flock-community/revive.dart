@@ -18,38 +18,63 @@ List<Todo> someTodos(TestLayer $) {
 }
 
 void main() {
-  testWidgets('Inbox', iphone8((tester) async {
-    await tester.expectWidgetToMatchFile(
-      View(TestLayer().let(($) => TestContext.fromData(todos: someTodos($), route: Route.inbox()))),
-      'golden/Inbox/some_todos.png',
-    );
+  group('Inbox', () {
+    testWidgets('some todos', iphone8((tester) async {
+      await tester.expectWidgetToMatchFile(
+        View(TestLayer().let(($) => TestContext.fromData(todos: someTodos($), route: Route.inbox()))),
+        'golden/Inbox/some_todos.png',
+      );
+    }));
 
-    await tester.expectWidgetToMatchFile(
-      TestLayer()
-          .let(($) => TestContext.fromData(
-                todos: [todoMock($, description: 'Something', completed: true)],
-                route: Route.inbox(),
-              ))
-          .let(($) => View($)),
-      'golden/Inbox/completed_todo.png',
-    );
-  }));
+    testWidgets('completed todo', iphone8((tester) async {
+      await tester.expectWidgetToMatchFile(
+        TestLayer()
+            .let(($) => TestContext.fromData(
+                  todos: [todoMock($, description: 'Something', completed: true)],
+                  route: Route.inbox(),
+                ))
+            .let(($) => View($)),
+        'golden/Inbox/completed_todo.png',
+      );
+    }));
+  });
 
-  testWidgets('Today', iphone8((tester) async {
-    await tester.expectWidgetToMatchFile(
-      TestLayer() //
-          .let(($) => TestContext.fromData(todos: someTodos($), route: Route.today()))
-          .let(($) => View($)),
-      'golden/Today/some_todos.png',
-    );
-  }));
+  group('Today', () {
+    testWidgets('some todos', iphone8((tester) async {
+      await tester.expectWidgetToMatchFile(
+        TestLayer() //
+            .let(($) => TestContext.fromData(todos: someTodos($), route: Route.today()))
+            .let(($) => View($)),
+        'golden/Today/some_todos.png',
+      );
+    }));
+  });
 
-  testWidgets('Create Todo', iphone8((tester) async {
-    await tester.expectWidgetToMatchFile(
-      TestLayer()
-          .let(($) => TestContext.fromData(todos: someTodos($), route: Inbox(CreateTodoModal(form: TodoForm()))))
-          .let(($) => View($)),
-      'golden/CreateTodo/empty_form.png',
-    );
-  }));
+  group('Today', () {
+    testWidgets('empty form', iphone8((tester) async {
+      await tester.expectWidgetToMatchFile(
+        TestLayer()
+            .let(($) => TestContext.fromData(todos: someTodos($), route: Inbox(CreateTodoModal(form: TodoForm()))))
+            .let(($) => View($)),
+        'golden/CreateTodo/empty_form.png',
+      );
+    }));
+
+    testWidgets('submitting form', iphone8((tester) async {
+      await tester.expectWidgetToMatchFile(
+        TestLayer()
+            .let(($) => TestContext.fromData(
+                todos: someTodos($),
+                route: Inbox(CreateTodoModal(
+                  form: TodoForm(
+                    submitting: true,
+                    description: 'hello',
+                    dueDate: $.clock.now(),
+                  ),
+                ))))
+            .let(($) => View($)),
+        'golden/CreateTodo/submitting_form.png',
+      );
+    }));
+  });
 }

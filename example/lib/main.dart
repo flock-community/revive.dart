@@ -15,8 +15,8 @@ void main() {
       layer: $,
       todoRepo: TestRepository(
         $,
-        [todoMock($, description: 'Make revive')],
-        delay: () => Duration(seconds: 2),
+        someTodos($),
+        delay: () => Duration(seconds: 3),
       ),
     ),
   );

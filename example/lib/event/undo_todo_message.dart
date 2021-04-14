@@ -13,8 +13,8 @@ SnackBar undoTodoMessage(UndoTodoMessage $, Todo todo) {
     action: SnackBarAction(
       label: 'Undo',
       onPressed: () async {
-        await $.todoRepo.delete(todo.id);
         $.todos.revive((state) => state.delete(todo.id));
+        await $.todoRepo.delete(todo.id);
       },
     ),
   );

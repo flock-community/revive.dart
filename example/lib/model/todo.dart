@@ -4,6 +4,7 @@ import 'package:revive/model/async.dart';
 import 'package:revive/service/clock.dart';
 import 'package:revive_example/model/async_exception.dart';
 import 'package:revive/service/id_generator.dart';
+import 'package:revive_example/model/todo_form.dart';
 import 'package:revive_example/util/extensions.dart';
 
 part 'todo.freezed.dart';
@@ -42,6 +43,8 @@ Todo createTodo(
 
 extension XTodo on Todo {
   bool dueToday(DateTime now) => dueDate?.isAtSameDayAs(now) ?? false;
+
+  TodoForm asForm() => TodoForm(description: description, dueDate: dueDate, submitting: false);
 }
 
 extension XTodos on List<Todo> {
