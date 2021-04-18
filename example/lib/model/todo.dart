@@ -45,6 +45,8 @@ extension XTodo on Todo {
   bool dueToday(DateTime now) => dueDate?.isAtSameDayAs(now) ?? false;
 
   TodoForm asForm() => TodoForm(description: description, dueDate: dueDate, submitting: false);
+
+  Todo updateFromForm(TodoForm form) => copyWith(description: form.description, dueDate: form.dueDate);
 }
 
 extension XTodos on List<Todo> {

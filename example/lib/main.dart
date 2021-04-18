@@ -16,7 +16,7 @@ void main() {
       todoRepo: TestRepository(
         $,
         someTodos($),
-        delay: () => Duration(seconds: 3),
+        delay: () => 750.milliseconds,
       ),
     ),
   );

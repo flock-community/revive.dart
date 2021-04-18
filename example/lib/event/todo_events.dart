@@ -13,7 +13,7 @@ import 'package:revive_example/service/todos.dart';
 abstract class OnTodoCompleted implements TodoRepo, Todos {}
 
 Future<void> onTodoCompleted(OnTodoCompleted $, TodoCompleted event) async {
-  final newTodo = event.todo.copyWith(completed: true);
+  final newTodo = event.todo.copyWith(completed: !event.todo.completed);
   $.todos.revive((it) => it.update(newTodo));
   try {
     await $.todoRepo.update(newTodo);
@@ -41,9 +41,25 @@ Future<void> onCreateTodoFormSubmitted(OnCreateTodoFormSubmitted $, CreateTodoFo
   }
 }
 
-abstract class OnStartApp implements RouteTo {}
+abstract class OnUpdateTodoFormSubmitted implements RouteState, TodoRepo, Todos, RouteTo {}
 
-Future<void> onStartApp(OnStartApp $, AppStarted event) async {
+Future<void> onUpdateTodoFormSubmitted(OnUpdateTodoFormSubmitted $, UpdateTodoFormSubmitted event) async {
+  final modal = event.modal, todo = modal.todo, form = modal.form;
+  final updatedTodo = todo.updateFromForm(form);
+  $.route.revive((it) => it.updateModal(modal.copyWith.form(submitting: true)));
+  try {
+    await $.todoRepo.update(updatedTodo);
+    $.todos.revive((it) => it.update(updatedTodo));
+    await routeTo($, $.route.state.copyWith(modal: null));
+  } catch (_) {
+    $.route.revive((it) => it.updateModal(modal.copyWith.form(submitting: false)));
+    rethrow;
+  }
+}
+
+abstract class OnAppStarted implements RouteTo {}
+
+Future<void> onAppStarted(OnAppStarted $, AppStarted event) async {
   await routeTo($, Route.inbox());
 }
 
@@ -57,4 +73,10 @@ abstract class OnInboxOpened implements RouteTo {}
 
 Future<void> onInboxOpened(OnInboxOpened $, InboxOpened event) async {
   await routeTo($, Route.inbox());
+}
+
+abstract class OnAppReloaded implements RouteTo {}
+
+Future<void> onAppReloaded(OnAppReloaded $, AppReloaded event) async {
+  await routeTo($, $.route.state);
 }

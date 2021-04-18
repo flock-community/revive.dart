@@ -11,10 +11,10 @@ extension XTestEffect on TestEffect {
     Function method, {
     required O output,
     required I input,
-    Duration duration = const Duration(seconds: 0),
+    Duration? duration,
   }) async {
     effects.add(Output(method, output, this));
-    await Future<void>.delayed(duration);
+    if (duration != null) await Future<void>.delayed(duration);
     effects.add(Input(method, input, this));
     return input;
   }

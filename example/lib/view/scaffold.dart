@@ -3,10 +3,10 @@ import 'package:revive_example/model/route.dart';
 import 'package:revive_example/model/todo_form.dart';
 import 'package:revive_example/service/events.dart';
 import 'package:revive_example/service/route_state.dart';
-import 'package:revive_example/view/create_todo.dart';
+import 'package:revive_example/view/todo_form.dart';
 import 'package:revive_example/widgets.dart';
 
-abstract class MyScaffoldContext implements RouteState, EventStream, CreateTodoContext {}
+abstract class MyScaffoldContext implements RouteState, EventStream {}
 
 class MyScaffold extends StatelessWidget {
   const MyScaffold(
@@ -14,11 +14,13 @@ class MyScaffold extends StatelessWidget {
     Key? key,
     required this.title,
     required this.body,
+    this.menu,
   }) : super(key: key);
 
   final MyScaffoldContext $;
   final Widget body;
   final Widget title;
+  final Widget? menu;
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +52,12 @@ class MyScaffold extends StatelessWidget {
           ],
         ),
       ),
-      appBar: AppBar(title: title),
+      appBar: AppBar(
+        title: title,
+        actions: [
+          if (menu != null) menu!,
+        ],
+      ),
       body: body,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
