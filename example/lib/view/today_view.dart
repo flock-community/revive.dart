@@ -20,7 +20,7 @@ class TodayPage extends HookWidget {
   final Today today;
 
   Widget build(BuildContext context) {
-    final todos = useStateStream($.todos.stream);
+    final todos = useStateStream($.todos.stream, [$]);
 
     return MyScaffold(
       $,

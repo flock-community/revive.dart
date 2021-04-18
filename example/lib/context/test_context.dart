@@ -91,3 +91,14 @@ class TestLayer with _$TestLayer implements TodoMock, TestRepositoryContext, Tes
     );
   }
 }
+
+@freezed
+class StoryBookLayer with _$StoryBookLayer {
+  StoryBookLayer._();
+
+  factory StoryBookLayer.raw({
+    required Subject<Effect> effects,
+    required IdGenerator id,
+    required StateSubject<Clock> clock,
+  }) = _StoryBookLayer;
+}

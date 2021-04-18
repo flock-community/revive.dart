@@ -18,7 +18,7 @@ class InboxPage extends HookWidget {
   final Inbox inbox;
 
   Widget build(BuildContext context) {
-    final todos = useStateStream($.todos.stream);
+    final todos = useStateStream($.todos.stream, [$]);
     return MyScaffold(
       $,
       title: Text('Inbox'),
