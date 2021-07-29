@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:revive/utils/function.dart';
 
-abstract class Effect {}
+abstract class Effect {
+  abstract final Function method;
+}
 
 class Input implements Effect {
   const Input(this.method, [this.input, this.object]);

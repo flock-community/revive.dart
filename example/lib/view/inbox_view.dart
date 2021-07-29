@@ -12,8 +12,9 @@ import 'package:revive_example/widgets.dart';
 abstract class InboxContext implements EventStream, TodoListContext, Todos, MyScaffoldContext {}
 
 class InboxPage extends HookWidget {
-  const InboxPage(this.$, this.inbox);
+  const InboxPage(this.$, this.inbox, this.effects);
 
+  final Widget effects;
   final InboxContext $;
   final Inbox inbox;
 
@@ -28,7 +29,10 @@ class InboxPage extends HookWidget {
             $.events.add(Event.onAppReloaded());
             return $.todos.stream.firstWhere((it) => !it.loading);
           },
-          child: TodoList($, it.data.where((todo) => inbox.showCompleted ? true : !todo.completed)),
+          child: Stack(children: [
+            TodoList($, it.data.where((todo) => inbox.showCompleted ? true : !todo.completed)),
+            effects,
+          ]),
         ),
         none: (it) => AsyncNoneView(it),
       ),
